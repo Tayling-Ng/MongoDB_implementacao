@@ -84,32 +84,33 @@ async function main() {
 
     // Endpoint Update: [PUT] /personagem
     // Requisição PUT: http://localhost:3000/personagem/1
-    app.put('/personagem/:id', function (req, res) {
+    app.put('/personagem/:id', async function (req, res) {
 
-        const id = req.params.id // Acessar o parâmetro id
+        // Acessar o parâmetro id
+        const id = req.params.id 
 
-        // Validação: Chegar se o item na requisição está na lista
-        if (!lista[id - 1]) {
-            return res.status(404).send('Item não encontrado.')
-        }
-
-        const body = req.body // Acessar o corpo da requisição
-
-        const novoItem = body.nome // Acessar a propriedade nome no corpo da requisião
+        // Acessar o corpo da requisição
+        const novoItem = req.body 
 
         // Validação: Verificar se a palavra "nome" está no corpo da requisição
-        if (!novoItem) {
+        if (!novoItem || !novoItem.nome) {
             return res.status(400).send('O corpo da requisição tem que conter a propriedade "nome".')
         }
 
-        // Validação: Verificar se o novo item já está na lista
-        if (lista.includes(novoItem)) {
-            return res.status(409).send('Esse item já existe na lista.')
+        // Validação: Verificar se o novo item já está na collection
+        const existe = await collection.findOne({ nome: novoItem.nome });
+
+        if (existe) {
+            return res.status(409).send('Esse item já existe na lista.');
         }
 
-        lista[id - 1] = novoItem // Atualizar na lista o novo item pelo id - 1
+        // Atualizar na collection o novo item pelo id - 1
+        await collection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: novoItem}
+        )
 
-        res.status(201).send('Item atualizado com sucesso!: ' + novoItem)
+        res.status(201).send(novoItem)
     })
 
     // Endpoint Delete: [DELETE] /personagem/:id
