@@ -68,10 +68,12 @@ async function main() {
             return res.status(400).send('O corpo da requisição tem que conter a propriedade "nome".')
         }
 
-        // Validação: Verificar se o novo item já está na lista
-        // if (lista.includes(novoItem)) {
-        //     return res.status(409).send('Esse item já existe na lista.')
-        // }
+        // Validação: Verificar se o novo item já está na collection
+        const existe = await collection.findOne({ nome: novoItem.nome });
+
+        if (existe) {
+        return res.status(409).send('Esse item já existe na lista.');
+        }
 
         // Adicionar o valor da propriedade na collection
         await collection.insertOne(novoItem) 
