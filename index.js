@@ -90,9 +90,9 @@ async function main() {
         const id = req.params.id 
 
         // Validação: Checar se o item na requisição está na lista
-        // if (!lista[id - 1]) {
-        //     return res.status(404).send('Item não encontrado.')
-        // }
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).send('Item não encontrado.');
+        }
 
         // Acessar o corpo da requisição
         const novoItem = req.body 
@@ -123,12 +123,12 @@ async function main() {
     app.delete('/personagem/:id', async function (req, res) {
 
         // Acessar o parâmetro id
-        const id = req.params.id 
+        const id = req.params.id
 
         // Validação: Chegar se o item na requisição está na lista
-        // if (!lista[id - 1]) {
-        //     return res.status(404).send('Item não encontrado.')
-        // }
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).send('Item não encontrado.');
+        }
 
         // Remover o item da collection usando id - 1
         await collection.deleteOne({ _id: new ObjectId(id) }) 
