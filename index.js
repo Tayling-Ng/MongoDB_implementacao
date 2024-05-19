@@ -57,26 +57,26 @@ async function main() {
     // Endpoint Create: [POST] /personagem
     // Escrever o corpo da requisição
     // Requisição POST: http://localhost:3000/personagem
-    app.post('/personagem', function (req, res) {
+    app.post('/personagem', async function (req, res) {
 
-        const body = req.body // Acessar o corpo da requisição
+        // Acessar o corpo da requisição
+        const novoItem = req.body 
         // console.log(body)
 
-        const novoItem = body.nome // Acessar a propriedade nome no corpo da requisião
-
         // Validação: Verificar se a palavra "nome" está no corpo da requisição
-        if (!novoItem) {
+        if (!novoItem || !novoItem.nome) {
             return res.status(400).send('O corpo da requisição tem que conter a propriedade "nome".')
         }
 
         // Validação: Verificar se o novo item já está na lista
-        if (lista.includes(novoItem)) {
-            return res.status(409).send('Esse item já existe na lista.')
-        }
+        // if (lista.includes(novoItem)) {
+        //     return res.status(409).send('Esse item já existe na lista.')
+        // }
 
-        lista.push(novoItem) // Adicionar o valor da propriedade na lista
+        // Adicionar o valor da propriedade na collection
+        await collection.insertOne(novoItem) 
 
-        res.status(201).send('Item adicionado com sucesso!: ' + novoItem)
+        res.status(201).send(novoItem)
         // console.log(lista)
     })
 
