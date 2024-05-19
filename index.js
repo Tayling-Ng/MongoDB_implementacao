@@ -89,6 +89,11 @@ async function main() {
         // Acessar o parâmetro id
         const id = req.params.id 
 
+        // Validação: Checar se o item na requisição está na lista
+        // if (!lista[id - 1]) {
+        //     return res.status(404).send('Item não encontrado.')
+        // }
+
         // Acessar o corpo da requisição
         const novoItem = req.body 
 
@@ -115,18 +120,20 @@ async function main() {
 
     // Endpoint Delete: [DELETE] /personagem/:id
     // Requisição DELETE: http://localhost:3000/personagem/id
-    app.delete('/personagem/:id', function (req, res) {
+    app.delete('/personagem/:id', async function (req, res) {
 
-        const id = req.params.id // Acessar o parâmetro id
+        // Acessar o parâmetro id
+        const id = req.params.id 
 
         // Validação: Chegar se o item na requisição está na lista
-        if (!lista[id - 1]) {
-            return res.status(404).send('Item não encontrado.')
-        }
+        // if (!lista[id - 1]) {
+        //     return res.status(404).send('Item não encontrado.')
+        // }
 
-        delete lista[id - 1] // Remover o item da lista usando id - 1
+        // Remover o item da collection usando id - 1
+        await collection.deleteOne({ _id: new ObjectId(id) }) 
 
-        res.send('Item removido com sucesso!')
+        res.send('Item removido com sucesso: ' + id)
     })
 }
 
