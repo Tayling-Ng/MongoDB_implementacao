@@ -28,8 +28,13 @@ async function main() {
 
     // Endpoint Read All: [GET] /personagem
     // Requisição GET: http://localhost:3000/personagem
-    app.get('/personagem', function (req, res) {
-        res.send(lista)
+    app.get('/personagem', async function (req, res) {
+
+        // Acessar a lista de itens na coleção no MongoDB
+        const itens = await collection.find().toArray()
+
+        // Enviar a lista como resultado
+        res.send(itens)
     })
 
     // Endpoint Read by ID: [GET] /personagem/:id
