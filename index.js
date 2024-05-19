@@ -1,5 +1,5 @@
 const express = require('express')
-const { MongoClient } = require('mongodb')
+const { MongoClient, ObjectId } = require('mongodb')
 const app = express()
 
 // Receber o corpo da requisição em json
@@ -39,11 +39,13 @@ async function main() {
 
     // Endpoint Read by ID: [GET] /personagem/:id
     // Requisição GET: http://localhost:3000/personagem/id
-    app.get('/personagem/:id', function (req, res) {
+    app.get('/personagem/:id', async function (req, res) {
 
-        const id = req.params.id // Acessar o parâmetro id
+        // Acessar o parâmetro id
+        const id = req.params.id
 
-        const item = lista[id - 1] // Acessar o item da lista usando id - 1
+        // Acessar o item da collection
+        const item = await collection.findOne({_id: new ObjectId(id)}) 
 
         if (!item) {
             return res.status(404).send('Item não encontrado.')
